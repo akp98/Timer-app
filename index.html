@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Timer App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .timer {
+            margin: 10px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multiple Timer App</h1>
+    <label>Hours: <input type="number" id="hours" min="0" value="0"></label>
+    <label>Minutes: <input type="number" id="minutes" min="0" value="0"></label>
+    <label>Seconds: <input type="number" id="seconds" min="0" value="1"></label>
+    <button onclick="startNewTimer()">Start New Timer</button>
+    <div id="timers"></div><script>
+    function startNewTimer() {
+        const hours = parseInt(document.getElementById('hours').value) || 0;
+        const minutes = parseInt(document.getElementById('minutes').value) || 0;
+        const seconds = parseInt(document.getElementById('seconds').value) || 0;
+        
+        let totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        if (totalSeconds <= 0) return;
+
+        const timerDiv = document.createElement('div');
+        timerDiv.className = 'timer';
+        
+        const timeDisplay = document.createElement('p');
+        timerDiv.appendChild(timeDisplay);
+        
+        const stopButton = document.createElement('button');
+        stopButton.innerText = 'Stop Timer';
+        stopButton.onclick = function () {
+            clearInterval(timerInterval);
+            timerDiv.remove();
+        };
+        timerDiv.appendChild(stopButton);
+
+        document.getElementById('timers').appendChild(timerDiv);
+        
+        function updateTimerDisplay() {
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            timeDisplay.innerText = `Time left: ${h}h ${m}m ${s}s`;
+        }
+        
+        updateTimerDisplay();
+        
+        const timerInterval = setInterval(() => {
+            totalSeconds--;
+            if (totalSeconds < 0) {
+                clearInterval(timerInterval);
+                timerDiv.remove();
+            } else {
+                updateTimerDisplay();
+            }
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
